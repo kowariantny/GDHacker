@@ -2,11 +2,10 @@
 #include <Windows.h>
 #include <tlHelp32.h>
 
-DWORD getProcess(LPCSTR process_name)
+HANDLE getProcess(LPCSTR process_name)
 {
 	HANDLE process_handle;
 	PROCESSENTRY32 process_data;
-	DWORD PID = NULL;
 	DWORD _err;
 
 	ZeroMemory(&process_data, sizeof(PROCESSENTRY32));
@@ -31,7 +30,7 @@ DWORD getProcess(LPCSTR process_name)
 	do
 	{
 		HANDLE process_handle_iter = OpenProcess(
-			PROCESS_QUERY_INFORMATION,
+			PROCESS_VM_OPERATION | PROCESS_VM_READ | PROCESS_VM_WRITE,
 			false,
 			process_data.th32ProcessID
 		);
@@ -40,11 +39,9 @@ DWORD getProcess(LPCSTR process_name)
 		{
 			if (strcmp(process_data.szExeFile, process_name) == 0)
 			{
-				PID = process_data.th32ProcessID;
 				CloseHandle(process_handle);
-				CloseHandle(process_handle_iter);
 
-				return PID;
+				return process_handle_iter;
 			}
 
 			CloseHandle(process_handle_iter);
@@ -54,7 +51,7 @@ DWORD getProcess(LPCSTR process_name)
 
 	CloseHandle(process_handle);
 
-	return PID;
+	return NULL;
 }
 void printPID(DWORD PID)
 {
