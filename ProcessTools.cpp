@@ -30,7 +30,7 @@ HANDLE getProcess(LPCSTR process_name)
 	do
 	{
 		HANDLE process_handle_iter = OpenProcess(
-			PROCESS_VM_OPERATION | PROCESS_VM_READ | PROCESS_VM_WRITE,
+			PROCESS_VM_OPERATION | PROCESS_VM_READ | PROCESS_VM_WRITE | PROCESS_QUERY_INFORMATION,
 			false,
 			process_data.th32ProcessID
 		);
@@ -56,4 +56,44 @@ HANDLE getProcess(LPCSTR process_name)
 void printPID(DWORD PID)
 {
 	printf("Opened process Id %d (%x)\n", PID, PID);
+}
+
+void writeMemory(HANDLE process_handle, void* addr, DWORD value)
+{
+	if (WriteProcessMemory(
+		process_handle,
+		addr,
+		&value,
+		sizeof(value),
+		NULL
+	))
+	{
+		printf("Wrote %d at address %p\n", value, addr);
+	}
+	else
+		printf("error writing to memory\n");
+}
+
+uintptr_t getModuleAddress(DWORD PID, LPCSTR module_name)
+{
+	uintptr_t address = 0;
+	HANDLE module_handle = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE | TH32CS_SNAPMODULE32, PID);
+	if (module_handle != INVALID_HANDLE_VALUE)
+	{
+		MODULEENTRY32 module_data;
+		module_data.dwSize = sizeof(module_data);
+
+		if (Module32First(module_handle, &module_data))
+		{
+			do
+			{
+				if (strcmp(module_name, module_data.szModule) == 0)
+				{
+					address = (uintptr_t)module_data.modBaseAddr;
+					break;
+				}
+			} while (Module32Next(module_handle, &module_data));
+		}
+	}
+	return address;
 }
