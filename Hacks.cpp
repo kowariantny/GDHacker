@@ -16,5 +16,11 @@ void ChangeSpeed(float game_speed)
         return;
 
     uintptr_t speed_addr = engine_addr + _GAME_SPEED_OFFSET;
-    WriteProcess<float>(proc_handle, (void*)speed_addr, game_speed);
+    WriteProcessMemory(
+        proc_handle, 
+        (LPVOID)speed_addr, 
+        &game_speed, 
+        sizeof(game_speed), 
+        NULL
+    );
 }
