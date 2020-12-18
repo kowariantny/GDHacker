@@ -7,11 +7,11 @@ HANDLE GetProcess(LPCSTR proc_name);
 template <class T>
 int WriteProcess(HANDLE proc_handle, void* addr, T value)
 {
-	return WriteProcessMemory(
-		proc_handle,
-		addr,
-		&value,
-		sizeof(T),
-		NULL
-	);
+    return WriteProcessMemory(
+        proc_handle,
+        addr,
+        &value,
+        sizeof(T),
+        NULL
+    );
 }
