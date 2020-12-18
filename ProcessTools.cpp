@@ -15,15 +15,11 @@ HANDLE getProcess(LPCSTR process_name)
 	process_handle = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 	if (process_handle == INVALID_HANDLE_VALUE)
 	{
-		_err = GetLastError();
-		printf("CreateToolHelp32Snapshot fail\n");
 		return NULL;
 	}
 
 	if (Process32First(process_handle, &process_data) == false)
 	{
-		_err = GetLastError();
-		printf("Process32First fail\n");
 		CloseHandle(process_handle);
 		return NULL;
 	}
@@ -41,7 +37,6 @@ HANDLE getProcess(LPCSTR process_name)
 			if (strcmp(process_data.szExeFile, process_name) == 0)
 			{
 				CloseHandle(process_handle);
-
 				return process_handle_iter;
 			}
 
