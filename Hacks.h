@@ -1,2 +1,2 @@
 #pragma once
-void changeSpeed(float game_speed);
+void ChangeSpeed(float game_speed);

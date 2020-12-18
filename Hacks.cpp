@@ -2,20 +2,19 @@
 #include "ProcessTools.h"
 #include "Defaults.h"
 
-void changeSpeed(float game_speed)
+void ChangeSpeed(float game_speed)
 {
-	HANDLE process_handle = getProcess(_GAME_PROCESS_NAME);
-	if (process_handle != NULL)
-	{
-		uintptr_t engine_address = getModuleAddress(
-			GetProcessId(process_handle), 
-			_ENGINE_MODULE_NAME
-		);
+	HANDLE proc_handle = GetProcess(_GAME_PROCESS_NAME);
+	if (proc_handle == INVALID_HANDLE_VALUE)
+		return;
 
-		if (engine_address != 0)
-		{
-			uintptr_t game_speed_address = engine_address + _GAME_SPEED_OFFSET;
-			WriteMemory<float>(process_handle, (void*)game_speed_address, game_speed);
-		}
-	}
+	uintptr_t engine_addr = GetModuleAddress(
+		GetProcessId(proc_handle), 
+		_ENGINE_MODULE_NAME
+	);
+	if (!engine_addr)
+		return;
+
+	uintptr_t speed_addr = engine_addr + _GAME_SPEED_OFFSET;
+	WriteProcess<float>(proc_handle, (void*)speed_addr, game_speed);
 }

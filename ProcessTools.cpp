@@ -1,79 +1,80 @@
-#include <iostream>
 #include <Windows.h>
 #include <tlHelp32.h>
 #include "ProcessTools.h"
 
-HANDLE getProcess(LPCSTR process_name)
+HANDLE GetProcess(LPCSTR proc_name)
 {
-	HANDLE process_handle;
-	PROCESSENTRY32 process_data;
-	DWORD _err;
+	PROCESSENTRY32 proc_data;
+	ZeroMemory(&proc_data, sizeof(PROCESSENTRY32));
+	proc_data.dwSize = sizeof(PROCESSENTRY32);
 
-	ZeroMemory(&process_data, sizeof(PROCESSENTRY32));
-	process_data.dwSize = sizeof(PROCESSENTRY32);
+	HANDLE proc_snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+	if (proc_snapshot == INVALID_HANDLE_VALUE)
+		return INVALID_HANDLE_VALUE;
 
-	process_handle = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-	if (process_handle == INVALID_HANDLE_VALUE)
+	if (!Process32First(proc_snapshot, &proc_data))
 	{
-		return NULL;
-	}
-
-	if (Process32First(process_handle, &process_data) == false)
-	{
-		CloseHandle(process_handle);
-		return NULL;
+		CloseHandle(proc_snapshot);
+		return INVALID_HANDLE_VALUE;
 	}
 
 	do
 	{
-		HANDLE process_handle_iter = OpenProcess(
-			PROCESS_VM_OPERATION | PROCESS_VM_READ | PROCESS_VM_WRITE | PROCESS_QUERY_INFORMATION,
+		HANDLE proc_iter = OpenProcess(
+			PROCESS_VM_OPERATION | 
+			PROCESS_VM_READ | 
+			PROCESS_VM_WRITE | 
+			PROCESS_QUERY_INFORMATION,
 			false,
-			process_data.th32ProcessID
+			proc_data.th32ProcessID
 		);
 
-		if (process_handle_iter != NULL)
+		if (proc_iter)
 		{
-			if (strcmp(process_data.szExeFile, process_name) == 0)
+			if (!strcmp(proc_data.szExeFile, proc_name))
 			{
-				CloseHandle(process_handle);
-				return process_handle_iter;
+				CloseHandle(proc_snapshot);
+				return proc_iter;
 			}
 
-			CloseHandle(process_handle_iter);
+			CloseHandle(proc_iter);
 		}
 
-	} while (Process32Next(process_handle, &process_data) != false);
-
-	CloseHandle(process_handle);
-
-	return NULL;
-}
-void printPID(DWORD PID)
-{
-	printf("Opened process Id %d (%x)\n", PID, PID);
-}
-
-uintptr_t getModuleAddress(DWORD PID, LPCSTR module_name)
-{
-	uintptr_t address = 0;
-	HANDLE module_handle = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE | TH32CS_SNAPMODULE32, PID);
-	if (module_handle != INVALID_HANDLE_VALUE)
-	{
-		MODULEENTRY32 module_data;
-		module_data.dwSize = sizeof(module_data);
-
-		if (Module32First(module_handle, &module_data))
-		{
-			do
-			{
-				if (strcmp(module_name, module_data.szModule) == 0)
-				{
-					address = (uintptr_t)module_data.modBaseAddr;
-					break;
-				}
-			} while (Module32Next(module_handle, &module_data));
-		}
 	}
-	return address;
+	while (Process32Next(proc_snapshot, &proc_data));
+
+	CloseHandle(proc_snapshot);
+	return INVALID_HANDLE_VALUE;
+}
+
+uintptr_t GetModuleAddress(DWORD PID, LPCSTR module_name)
+{
+	HANDLE module_snapshot = CreateToolhelp32Snapshot(
+		TH32CS_SNAPMODULE | 
+		TH32CS_SNAPMODULE32, 
+		PID
+	);
+	if (module_snapshot == INVALID_HANDLE_VALUE)
+		return 0;
+
+	MODULEENTRY32 module_data;
+	module_data.dwSize = sizeof(module_data);
+
+	if (!Module32First(module_snapshot, &module_data))
+	{
+		CloseHandle(module_snapshot);
+		return 0;
+	}
+
+	do
+	{
+		if (!strcmp(module_name, module_data.szModule))
+		{
+			CloseHandle(module_snapshot);
+			return (uintptr_t)module_data.modBaseAddr;
+		}
+	} while (Module32Next(module_snapshot, &module_data));
+
+	CloseHandle(module_snapshot);
+	return 0;
 }
