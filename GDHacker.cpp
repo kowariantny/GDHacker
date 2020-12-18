@@ -1,5 +1,6 @@
 #include <iostream>
 #include <Windows.h>
+#include "ProcessTools.h"
 
 int main()
 {
@@ -20,7 +21,7 @@ int main()
 
 			if (process_handle != NULL)
 			{
-				printf("Opened process Id %d (%x)\n", PID, PID);
+				printPID(PID);
 				CloseHandle(process_handle);
 			}
 			else
@@ -30,7 +31,22 @@ int main()
 			}
 		}
 	}
-	else printf("window not found\n");
+	else
+	{
+		printf("window not found\n"
+			"attempting to find window by process\n");
+
+		PID = getProcess("Tutorial-x86_64.exe");
+
+		if (PID != NULL)
+		{
+			printPID(PID);
+		}
+		else
+		{
+			printf("unable to find process\n");
+		}
+	}
 
 	system("pause");
 }
