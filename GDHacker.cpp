@@ -21,6 +21,10 @@ int main()
 
 			uintptr_t game_speed_address = engine_address + 0x416780;
 			printf("Translated pointer %" PRIxPTR "\n", game_speed_address);
+			
+			float game_speed = 2.0;
+			int result = WriteMemory<float>(process_handle, (void*)game_speed_address, game_speed);
+			printf(result != 0 ? "yes\n" : "no\n");
 		}
 		//printf("Here's a pointer for you: %" PRIxPTR "\n", p);
 		// writeMemory(process_handle, (void*)0x011066B0, 1000);

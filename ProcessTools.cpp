@@ -1,6 +1,7 @@
 #include <iostream>
 #include <Windows.h>
 #include <tlHelp32.h>
+#include "ProcessTools.h"
 
 HANDLE getProcess(LPCSTR process_name)
 {
@@ -56,22 +57,6 @@ HANDLE getProcess(LPCSTR process_name)
 void printPID(DWORD PID)
 {
 	printf("Opened process Id %d (%x)\n", PID, PID);
-}
-
-void writeMemory(HANDLE process_handle, void* addr, DWORD value)
-{
-	if (WriteProcessMemory(
-		process_handle,
-		addr,
-		&value,
-		sizeof(value),
-		NULL
-	))
-	{
-		printf("Wrote %d at address %p\n", value, addr);
-	}
-	else
-		printf("error writing to memory\n");
 }
 
 uintptr_t getModuleAddress(DWORD PID, LPCSTR module_name)
