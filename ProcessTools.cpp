@@ -1,6 +1,5 @@
-#include <Windows.h>
-#include <tlHelp32.h>
 #include "ProcessTools.h"
+#include <tlHelp32.h>
 
 HANDLE GetProcess(LPCSTR proc_name)
 {
