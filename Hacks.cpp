@@ -18,11 +18,10 @@ void ChangeSpeed(float game_speed)
         CloseHandle(proc_handle);
         return;
     }
-
-    uintptr_t speed_addr = engine_addr + _GAME_SPEED_OFFSET;
+    
     WriteProcessMemory(
         proc_handle, 
-        (LPVOID)speed_addr, 
+        (LPVOID)(engine_addr + _GAME_SPEED_OFFSET),
         &game_speed, 
         sizeof(game_speed), 
         NULL
@@ -51,8 +50,35 @@ void FreezeTributes()
     WriteProcessMemory(
         proc_handle,
         (LPVOID)tributes_addr,
-        _FREEZE_TRIBUTES_INJECTION.data(),
-        _FREEZE_TRIBUTES_INJECTION.size(),
+        _FREEZE_TRIBUTES_INJECT.data(),
+        _FREEZE_TRIBUTES_INJECT.size(),
+        NULL
+    );
+
+    CloseHandle(proc_handle);
+}
+
+void PlayStatsToggle(bool state)
+{
+    HANDLE proc_handle = GetProcess(_GAME_PROCESS_NAME);
+    if (proc_handle == INVALID_HANDLE_VALUE)
+        return;
+
+    uintptr_t game_addr = GetModuleAddress(
+        GetProcessId(proc_handle),
+        _GAME_PROCESS_NAME
+    );
+    if (!game_addr)
+    {
+        CloseHandle(proc_handle);
+        return;
+    }
+
+    WriteProcessMemory(
+        proc_handle,
+        (LPVOID)(game_addr + _PLAYSTATS_OFFSET),
+        _PLAYSTATS_INJECT[state].data(),
+        _PLAYSTATS_INJECT[state].size(),
         NULL
     );
 
