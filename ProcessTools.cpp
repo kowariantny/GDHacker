@@ -77,3 +77,36 @@ uintptr_t GetModuleAddress(DWORD PID, LPCSTR module_name)
     CloseHandle(module_snapshot);
     return 0;
 }
+
+void WriteProcess(
+    LPCSTR proc_name, 
+    LPCSTR module_name, 
+    const uintptr_t offset,
+    LPCVOID data_addr,
+    SIZE_T data_size
+)
+{
+    HANDLE proc_handle = GetProcess(proc_name);
+    if (proc_handle == INVALID_HANDLE_VALUE)
+        return;
+
+    uintptr_t module_addr = GetModuleAddress(
+        GetProcessId(proc_handle),
+        module_name
+    );
+    if (!module_addr)
+    {
+        CloseHandle(proc_handle);
+        return;
+    }
+
+    WriteProcessMemory(
+        proc_handle,
+        (LPVOID)(module_addr + offset),
+        data_addr,
+        data_size,
+        NULL
+    );
+
+    CloseHandle(proc_handle);
+}
