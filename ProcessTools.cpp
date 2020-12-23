@@ -30,7 +30,7 @@ HANDLE GetProcess(LPCSTR proc_name)
 
         if (proc_iter)
         {
-            if (!strcmp(proc_data.szExeFile, proc_name))
+            if (!_stricmp(proc_data.szExeFile, proc_name))
             {
                 CloseHandle(proc_snapshot);
                 return proc_iter;
@@ -67,7 +67,7 @@ uintptr_t GetModuleAddress(DWORD PID, LPCSTR module_name)
 
     do
     {
-        if (!strcmp(module_name, module_data.szModule))
+        if (!_stricmp(module_name, module_data.szModule))
         {
             CloseHandle(module_snapshot);
             return (uintptr_t)module_data.modBaseAddr;
