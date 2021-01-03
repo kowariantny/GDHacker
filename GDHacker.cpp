@@ -21,6 +21,11 @@ int main(int argc, char** argv)
         if (argc > 2)
             PlayStatsToggle(atoi(argv[2]));
         break;
+
+    case 3:
+        if (argc > 2)
+            FreezeExp(atoi(argv[2]));
+        break;
     }
 }
 

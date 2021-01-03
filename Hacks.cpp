@@ -33,3 +33,14 @@ void PlayStatsToggle(bool state)
         _PLAYSTATS_INJECT[state].size()
     );
 }
+
+void FreezeExp(bool state)
+{
+    WriteProcess(
+        _GAME_PROCESS_NAME,
+        _GAME_MODULE_NAME,
+        _FREEZE_EXP_OFFSET,
+        _FREEZE_EXP_INJECT[state].data(),
+        _FREEZE_EXP_INJECT[state].size()
+    );
+}
