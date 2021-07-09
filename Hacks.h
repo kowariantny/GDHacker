@@ -7,7 +7,7 @@ const char* const _GAME_MODULE_NAME = "Game.dll";
 
 const uintptr_t _GAME_SPEED_OFFSET = 0x416780;
 
-const uintptr_t _FREEZE_TRIBUTES_OFFSET = 0x38021F;
+const uintptr_t _FREEZE_TRIBUTES_OFFSET = 0x37ABFF;
 const std::vector<unsigned char> _FREEZE_TRIBUTES_INJECT(6, 0x90);
 
 const uintptr_t _PLAYSTATS_OFFSET = 0xF7AD;
