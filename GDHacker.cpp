@@ -26,6 +26,10 @@ int main(int argc, char** argv)
         if (argc > 2)
             FreezeExp(atoi(argv[2]));
         break;
+
+    case 4:     
+        FasterCamera();
+        break;
     }
 }
 

@@ -44,3 +44,14 @@ void FreezeExp(bool state)
         _FREEZE_EXP_INJECT[state].size()
     );
 }
+
+void FasterCamera()
+{
+    WriteProcess(
+        _GAME_PROCESS_NAME,
+        _GAME_MODULE_NAME,
+        _FASTER_CAMERA_OFFSET,
+        _FASTER_CAMERA_INJECT.data(),
+        _FASTER_CAMERA_INJECT.size()
+    );
+}
