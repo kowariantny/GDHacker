@@ -23,7 +23,7 @@ const std::vector<unsigned char> _FREEZE_EXP_INJECT[2] = {
 };
 
 const uintptr_t _FASTER_CAMERA_OFFSET = 0x20EAD2;
-const std::vector<unsigned char> _FASTER_CAMERA_INJECT{ 0xF3, 0x0F, 0x59, 0x35, 0x66, 0x8C, 0x40, 0x00 };
+const std::vector<unsigned char> _FASTER_CAMERA_INJECT{ 0xF3, 0x0F, 0x59, 0x35, 0x76, 0x8C, 0x40, 0x00 };
 
 void ChangeSpeed(float game_speed);
 void FreezeTributes();
