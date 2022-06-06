@@ -83,7 +83,8 @@ void WriteProcess(
     LPCSTR module_name, 
     const uintptr_t offset,
     LPCVOID data_addr,
-    SIZE_T data_size
+    const SIZE_T data_size,
+    LPCVOID data_control
 )
 {
     HANDLE proc_handle = GetProcess(proc_name);
@@ -98,6 +99,30 @@ void WriteProcess(
     {
         CloseHandle(proc_handle);
         return;
+    }
+
+    if (data_control != NULL)
+    {
+        unsigned char *control_buffer = new unsigned char[data_size];
+        SIZE_T number_of_bytes = 0;
+
+        ReadProcessMemory(
+            proc_handle,
+            (LPCVOID)(module_addr + offset),
+            control_buffer,
+            data_size,
+            &number_of_bytes
+        );
+
+        if ((data_size != number_of_bytes)
+            || !memcmp(data_control, control_buffer, number_of_bytes))
+        {
+            delete[] control_buffer;
+            CloseHandle(proc_handle);
+            return;
+        }
+
+        delete[] control_buffer;
     }
 
     WriteProcessMemory(

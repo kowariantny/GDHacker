@@ -19,7 +19,8 @@ void FreezeTributes()
         _GAME_MODULE_NAME,
         _FREEZE_TRIBUTES_OFFSET,
         _FREEZE_TRIBUTES_INJECT.data(),
-        _FREEZE_TRIBUTES_INJECT.size()
+        _FREEZE_TRIBUTES_INJECT.size(),
+        _FREEZE_TRIBUTES_CONTROL.data()
     );
 }
 
