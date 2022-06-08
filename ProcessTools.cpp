@@ -1,5 +1,8 @@
 #include "ProcessTools.h"
 #include <tlHelp32.h>
+#include <iostream>
+#include <iomanip>
+#include <fstream>
 
 HANDLE GetProcess(LPCSTR proc_name)
 {
@@ -101,9 +104,34 @@ void WriteProcess(
         return;
     }
 
+    if (ControlTributes(data_control, data_size, proc_handle, module_addr, offset))
+    {
+        WriteProcessMemory(
+            proc_handle,
+            (LPVOID)(module_addr + offset),
+            data_addr,
+            data_size,
+            NULL
+        );
+        writeLog("Tributes have been frozen (hopefully)");
+    }
+    else // std::cout << "Program needs updating or Tributes are already frozen." << std::endl;
+        writeLog("Offset needs updating or Tributes were frozen already in previous run");
+    
+    CloseHandle(proc_handle);
+}
+
+bool ControlTributes(
+    LPCVOID data_control,
+    const SIZE_T data_size,
+    HANDLE proc_handle,
+    uintptr_t module_addr,
+    const uintptr_t offset
+)
+{
     if (data_control != NULL)
     {
-        unsigned char *control_buffer = new unsigned char[data_size];
+        unsigned char* control_buffer = new unsigned char[data_size];
         SIZE_T number_of_bytes = 0;
 
         ReadProcessMemory(
@@ -114,24 +142,33 @@ void WriteProcess(
             &number_of_bytes
         );
 
+        // printBytes(data_size, control_buffer);
+        //printBytes(number_of_bytes, (BYTE*)data_control);
+
         if ((data_size != number_of_bytes)
-            || !memcmp(data_control, control_buffer, number_of_bytes))
+            || memcmp(data_control, control_buffer, number_of_bytes))
         {
             delete[] control_buffer;
             CloseHandle(proc_handle);
-            return;
+            return false;
         }
 
         delete[] control_buffer;
     }
+}
 
-    WriteProcessMemory(
-        proc_handle,
-        (LPVOID)(module_addr + offset),
-        data_addr,
-        data_size,
-        NULL
-    );
+void printBytes(const SIZE_T data_size, BYTE *data)
+{
+    for (int i = 0; i < data_size; i++)
+        std::cout << std::hex << std::setw(2) << (int)data[i] << " ";
 
-    CloseHandle(proc_handle);
+    std::cout << std::endl;
+}
+
+void writeLog(std::string text)
+{
+    std::ofstream o; //ofstream is the class for fstream package
+    o.open("log.txt"); //open is the method of ofstream
+    o << text << std::endl;
+    o.close();
 }
