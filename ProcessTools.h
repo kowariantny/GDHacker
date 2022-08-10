@@ -22,4 +22,12 @@ bool ControlTributes(
     uintptr_t module_addr,
     const uintptr_t offset
 );
-void writeLog(std::string text);
+
+
+uintptr_t UpdateOffset(
+    LPCSTR proc_name,
+    LPCSTR module_name,
+    LPCVOID data_control,
+    const uintptr_t offset,
+    const SIZE_T data_size
+);

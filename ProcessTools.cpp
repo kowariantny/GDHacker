@@ -1,8 +1,12 @@
 #include "ProcessTools.h"
+#include "Hacks.h"
 #include <tlHelp32.h>
 #include <iostream>
 #include <iomanip>
 #include <fstream>
+
+unsigned char control_buffer[1000];
+
 
 HANDLE GetProcess(LPCSTR proc_name)
 {
@@ -104,21 +108,57 @@ void WriteProcess(
         return;
     }
 
-    if (ControlTributes(data_control, data_size, proc_handle, module_addr, offset))
-    {
-        WriteProcessMemory(
-            proc_handle,
-            (LPVOID)(module_addr + offset),
-            data_addr,
-            data_size,
-            NULL
-        );
-        writeLog("Tributes have been frozen (hopefully)");
-    }
-    else // std::cout << "Program needs updating or Tributes are already frozen." << std::endl;
-        writeLog("Offset needs updating or Tributes were frozen already in previous run");
+    WriteProcessMemory(
+        proc_handle,
+        (LPVOID)(module_addr + offset),
+        data_addr,
+        data_size,
+        NULL
+    );
     
     CloseHandle(proc_handle);
+}
+
+uintptr_t UpdateOffset(
+    LPCSTR proc_name,
+    LPCSTR module_name,
+    LPCVOID data_control,
+    const uintptr_t offset,
+    const SIZE_T data_size
+)
+{
+    HANDLE proc_handle = GetProcess(proc_name);
+    if (proc_handle == INVALID_HANDLE_VALUE)
+        return 0;
+
+    uintptr_t module_addr = GetModuleAddress(
+        GetProcessId(proc_handle),
+        module_name
+    );
+    if (!module_addr)
+    {
+        CloseHandle(proc_handle);
+        return 0;
+    }
+
+    for (uintptr_t diff = 0; diff <= 2000000; diff++)
+    {
+        if (ControlTributes(data_control, data_size, proc_handle, module_addr, offset + diff)
+            && ControlTributes(data_control, data_size, proc_handle, module_addr, offset + diff + 19))
+        {
+            CloseHandle(proc_handle);
+            return offset + diff;
+        }
+
+        if (ControlTributes(data_control, data_size, proc_handle, module_addr, offset - diff)
+            && ControlTributes(data_control, data_size, proc_handle, module_addr, offset - diff + 19))
+        {
+            CloseHandle(proc_handle);
+            return offset - diff;
+        }        
+    }
+    CloseHandle(proc_handle);
+    return 0;
 }
 
 bool ControlTributes(
@@ -131,7 +171,6 @@ bool ControlTributes(
 {
     if (data_control != NULL)
     {
-        unsigned char* control_buffer = new unsigned char[data_size];
         SIZE_T number_of_bytes = 0;
 
         ReadProcessMemory(
@@ -142,18 +181,16 @@ bool ControlTributes(
             &number_of_bytes
         );
 
-        // printBytes(data_size, control_buffer);
+        //printBytes(data_size, control_buffer);
         //printBytes(number_of_bytes, (BYTE*)data_control);
 
         if ((data_size != number_of_bytes)
             || memcmp(data_control, control_buffer, number_of_bytes))
         {
-            delete[] control_buffer;
-            CloseHandle(proc_handle);
             return false;
         }
 
-        delete[] control_buffer;
+        return true;
     }
 }
 
@@ -163,12 +200,4 @@ void printBytes(const SIZE_T data_size, BYTE *data)
         std::cout << std::hex << std::setw(2) << (int)data[i] << " ";
 
     std::cout << std::endl;
-}
-
-void writeLog(std::string text)
-{
-    std::ofstream o; //ofstream is the class for fstream package
-    o.open("log.txt"); //open is the method of ofstream
-    o << text << std::endl;
-    o.close();
 }

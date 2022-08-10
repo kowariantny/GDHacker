@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <string>
 
 const char* const _GAME_PROCESS_NAME = "Grim Dawn.exe";
 const char* const _ENGINE_MODULE_NAME = "Engine.dll";
@@ -27,3 +28,6 @@ void ChangeSpeed(float game_speed);
 void FreezeTributes(uintptr_t offset);
 void PlayStatsToggle(bool state);
 void FreezeExp(bool state);
+void writeLog(std::string text);
+
+uintptr_t FindOffset(uintptr_t offset);

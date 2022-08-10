@@ -8,20 +8,9 @@
 
 int main(int argc, char** argv)
 {
-    
-    std::ifstream myfile; 
-    myfile.open("offset.txt");
-
-
-    uintptr_t offset;
-    myfile >> std::hex >> offset;
-    myfile.close();
-
-    //std::cout << std::hex << offset;
-
-    
-
-    FreezeTributes(offset);
+    uintptr_t offset = FindOffset(_FREEZE_TRIBUTES_OFFSET);
+    if (offset)
+        FreezeTributes(offset);
 }
 
 

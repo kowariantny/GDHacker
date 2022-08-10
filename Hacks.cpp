@@ -1,5 +1,6 @@
 #include "Hacks.h"
 #include "ProcessTools.h"
+#include <fstream>
 
 void ChangeSpeed(float game_speed)
 {
@@ -24,6 +25,17 @@ void FreezeTributes(uintptr_t offset)
     );
 }
 
+uintptr_t FindOffset(uintptr_t offset)
+{
+    return UpdateOffset(
+        _GAME_PROCESS_NAME,
+        _GAME_MODULE_NAME,
+        _FREEZE_TRIBUTES_CONTROL.data(),
+        offset,
+        _FREEZE_TRIBUTES_INJECT.size()
+    );
+}
+
 void PlayStatsToggle(bool state)
 {
     WriteProcess(
@@ -44,4 +56,12 @@ void FreezeExp(bool state)
         _FREEZE_EXP_INJECT[state].data(),
         _FREEZE_EXP_INJECT[state].size()
     );
+}
+
+void writeLog(std::string text)
+{
+    std::ofstream o; //ofstream is the class for fstream package
+    o.open("log.txt"); //open is the method of ofstream
+    o << text << std::endl;
+    o.close();
 }
