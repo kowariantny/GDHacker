@@ -24,6 +24,6 @@ const std::vector<unsigned char> _FREEZE_EXP_INJECT[2] = {
 };
 
 void ChangeSpeed(float game_speed);
-void FreezeTributes();
+void FreezeTributes(uintptr_t offset);
 void PlayStatsToggle(bool state);
 void FreezeExp(bool state);

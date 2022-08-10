@@ -12,12 +12,12 @@ void ChangeSpeed(float game_speed)
     );
 }
 
-void FreezeTributes()
+void FreezeTributes(uintptr_t offset)
 {
     WriteProcess(
         _GAME_PROCESS_NAME,
         _GAME_MODULE_NAME,
-        _FREEZE_TRIBUTES_OFFSET,
+        offset,
         _FREEZE_TRIBUTES_INJECT.data(),
         _FREEZE_TRIBUTES_INJECT.size(),
         _FREEZE_TRIBUTES_CONTROL.data()

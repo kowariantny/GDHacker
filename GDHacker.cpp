@@ -8,7 +8,7 @@
 
 int main(int argc, char** argv)
 {
-    /*
+    
     std::ifstream myfile; 
     myfile.open("offset.txt");
 
@@ -17,11 +17,11 @@ int main(int argc, char** argv)
     myfile >> std::hex >> offset;
     myfile.close();
 
-    std::cout << std::hex << offset;
+    //std::cout << std::hex << offset;
 
-    */
+    
 
-    FreezeTributes();
+    FreezeTributes(offset);
 }
 
 
