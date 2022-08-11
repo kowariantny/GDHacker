@@ -36,6 +36,17 @@ uintptr_t FindOffset(uintptr_t offset)
     );
 }
 
+uintptr_t FindExpOffset(uintptr_t offset)
+{
+    return UpdateExpOffset(
+        _GAME_PROCESS_NAME,
+        _GAME_MODULE_NAME,
+        _FREEZE_EXP_CONTROL.data(),
+        offset,
+        _FREEZE_EXP_CONTROL.size()
+    );
+}
+
 void PlayStatsToggle(bool state)
 {
     WriteProcess(
@@ -47,14 +58,14 @@ void PlayStatsToggle(bool state)
     );
 }
 
-void FreezeExp(bool state)
+void FreezeExp(uintptr_t offset)
 {
     WriteProcess(
         _GAME_PROCESS_NAME,
         _GAME_MODULE_NAME,
-        _FREEZE_EXP_OFFSET,
-        _FREEZE_EXP_INJECT[state].data(),
-        _FREEZE_EXP_INJECT[state].size()
+        offset,
+        _FREEZE_EXP_INJECT[1].data(),
+        _FREEZE_EXP_INJECT[1].size()
     );
 }
 

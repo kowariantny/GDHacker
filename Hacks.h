@@ -23,11 +23,14 @@ const std::vector<unsigned char> _FREEZE_EXP_INJECT[2] = {
     std::vector<unsigned char>{0x01, 0x51, 0x7C},
     std::vector<unsigned char>(3, 0x90)
 };
+const std::vector<unsigned char> _FREEZE_EXP_CONTROL{ 0x01, 0x51, 0x7C, 0x40, 0x32, 0xFF, 0x8B, 0x41, 0x74 };
+
 
 void ChangeSpeed(float game_speed);
 void FreezeTributes(uintptr_t offset);
 void PlayStatsToggle(bool state);
-void FreezeExp(bool state);
+void FreezeExp(uintptr_t offset);
 void writeLog(std::string text);
 
 uintptr_t FindOffset(uintptr_t offset);
+uintptr_t FindExpOffset(uintptr_t offset);

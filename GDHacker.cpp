@@ -8,9 +8,9 @@
 
 int main(int argc, char** argv)
 {
-    uintptr_t offset = FindOffset(_FREEZE_TRIBUTES_OFFSET);
+    uintptr_t offset = FindExpOffset(_FREEZE_EXP_OFFSET);
     if (offset)
-        FreezeTributes(offset);
+        FreezeExp(offset);
 }
 
 

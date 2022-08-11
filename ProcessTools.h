@@ -31,3 +31,11 @@ uintptr_t UpdateOffset(
     const uintptr_t offset,
     const SIZE_T data_size
 );
+
+uintptr_t UpdateExpOffset(
+    LPCSTR proc_name,
+    LPCSTR module_name,
+    LPCVOID data_control,
+    const uintptr_t offset,
+    const SIZE_T data_size
+);

@@ -161,6 +161,46 @@ uintptr_t UpdateOffset(
     return 0;
 }
 
+uintptr_t UpdateExpOffset(
+    LPCSTR proc_name,
+    LPCSTR module_name,
+    LPCVOID data_control,
+    const uintptr_t offset,
+    const SIZE_T data_size
+)
+{
+    HANDLE proc_handle = GetProcess(proc_name);
+    if (proc_handle == INVALID_HANDLE_VALUE)
+        return 0;
+
+    uintptr_t module_addr = GetModuleAddress(
+        GetProcessId(proc_handle),
+        module_name
+    );
+    if (!module_addr)
+    {
+        CloseHandle(proc_handle);
+        return 0;
+    }
+
+    for (uintptr_t diff = 0; diff <= 2000000; diff++)
+    {
+        if (ControlTributes(data_control, data_size, proc_handle, module_addr, offset + diff))
+        {
+            CloseHandle(proc_handle);
+            return offset + diff;
+        }
+
+        if (ControlTributes(data_control, data_size, proc_handle, module_addr, offset - diff))
+        {
+            CloseHandle(proc_handle);
+            return offset - diff;
+        }
+    }
+    CloseHandle(proc_handle);
+    return 0;
+}
+
 bool ControlTributes(
     LPCVOID data_control,
     const SIZE_T data_size,
