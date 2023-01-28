@@ -28,7 +28,8 @@ int main(int argc, char** argv)
         break;
 
     case 4:     
-        FasterCamera();
+        if (argc > 2)
+            FasterCamera(atoi(argv[2]));
         break;
     }
 }
