@@ -10,7 +10,7 @@ const uintptr_t _GAME_SPEED_OFFSET = 0x416780;
 
 const uintptr_t _FREEZE_TRIBUTES_OFFSET = 0x37DF8F;
 const std::vector<unsigned char> _FREEZE_TRIBUTES_INJECT(6, 0x90);
-const std::vector<unsigned char> _FREEZE_TRIBUTES_CONTROL{ 0x89, 0x83, 0x30, 0x13, 0x00, 0x00 };
+const std::vector<unsigned char> _FREEZE_TRIBUTES_CONTROL{ 0x89, 0x83, 0x60, 0x15, 0x00, 0x00 };
 
 const uintptr_t _PLAYSTATS_OFFSET = 0xF7AD;
 const std::vector<unsigned char> _PLAYSTATS_INJECT[2] = {
