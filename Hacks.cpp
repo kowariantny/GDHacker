@@ -48,7 +48,7 @@ void FreezeExp(bool state)
 void FasterCamera(int level)
 {
     std::vector<unsigned char> _FASTER_CAMERA_INJECT{ 0xF3, 0x0F, 0x59, 0x35
-        , (unsigned char)( 42 + (level*4)), 0xAD, 0x40, 0x00 };
+        , (unsigned char)( 0x5A + (level*4)), 0xAD, 0x40, 0x00 };
 
     WriteProcess(
         _GAME_PROCESS_NAME,
