@@ -24,8 +24,15 @@ const std::vector<unsigned char> _FREEZE_EXP_INJECT[2] = {
 
 const uintptr_t _FASTER_CAMERA_OFFSET = 0x216972;
 
+const uintptr_t _CONSOLE_UNLOCK_OFFSETS[2] = { 0x25FC4B, 0x2934CF };
+const std::vector<unsigned char> _CONSOLE_UNLOCK_INJECTS[2] = {
+    std::vector<unsigned char>{0xE9, 0x7F, 0x38, 0x03, 0x00, 0x90},
+    std::vector<unsigned char>{0xC7, 0x41, 0x10, 0x01, 0x00, 0x00, 0x00, 0x4C, 0x8B, 0xF2, 0x48, 0x8B, 0xF9, 0xE9, 0x70, 0xC7, 0xFC, 0xFF}
+};
+
 void ChangeSpeed(float game_speed);
 void FreezeTributes();
 void PlayStatsToggle(bool state);
 void FreezeExp(bool state);
 void FasterCamera(int level);
+void UnlockConsole();

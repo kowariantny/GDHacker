@@ -31,6 +31,10 @@ int main(int argc, char** argv)
         if (argc > 2)
             FasterCamera(atoi(argv[2]));
         break;
+
+    case 5:
+        UnlockConsole();
+        break;
     }
 }
 

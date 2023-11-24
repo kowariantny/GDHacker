@@ -58,3 +58,15 @@ void FasterCamera(int level)
         _FASTER_CAMERA_INJECT.size()
     );
 }
+
+void UnlockConsole()
+{
+    for (int i=0; i<2; i++)
+    WriteProcess(
+        _GAME_PROCESS_NAME,
+        _GAME_PROCESS_NAME,
+        _CONSOLE_UNLOCK_OFFSETS[i],
+        _CONSOLE_UNLOCK_INJECTS[i].data(),
+        _CONSOLE_UNLOCK_INJECTS[i].size()
+    );
+}
