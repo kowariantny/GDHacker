@@ -110,3 +110,37 @@ void WriteProcess(
 
     CloseHandle(proc_handle);
 }
+
+void WriteModule(
+    LPCSTR proc_name,
+    LPCSTR module_name,
+    const int N,
+    const uintptr_t offsets[],
+    const std::vector<unsigned char> injects[]
+)
+{
+    HANDLE proc_handle = GetProcess(proc_name);
+    if (proc_handle == INVALID_HANDLE_VALUE)
+        return;
+
+    uintptr_t module_addr = GetModuleAddress(
+        GetProcessId(proc_handle),
+        module_name
+    );
+    if (!module_addr)
+    {
+        CloseHandle(proc_handle);
+        return;
+    }
+
+    for (int i=0; i<N; i++)
+    WriteProcessMemory(
+        proc_handle,
+        (LPVOID)(module_addr + offsets[i]),
+        injects[i].data(),
+        injects[i].size(),
+        NULL
+    );
+
+    CloseHandle(proc_handle);
+}
