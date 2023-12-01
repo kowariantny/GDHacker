@@ -5,7 +5,7 @@ const char* const _GAME_PROCESS_NAME = "Grim Dawn.exe";
 const char* const _ENGINE_MODULE_NAME = "Engine.dll";
 const char* const _GAME_MODULE_NAME = "Game.dll";
 
-const uintptr_t _GAME_SPEED_OFFSET = 0x41D890;
+const uintptr_t _GAME_SPEED_OFFSET = 0x414780;
 
 const uintptr_t _FREEZE_TRIBUTES_OFFSET = 0x37AD3F;
 const std::vector<unsigned char> _FREEZE_TRIBUTES_INJECT(6, 0x90);
